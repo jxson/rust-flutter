@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">rustflutter</string>
+    <string name="title">Rst Flutter Application</string>
+    <string name="get_random">Get Random Number</string>
+</resources>
