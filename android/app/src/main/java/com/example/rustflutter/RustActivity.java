@@ -40,21 +40,13 @@ public class RustActivity extends Activity {
         flutterView = (FlutterView) findViewById(R.id.flutter_view);
         flutterView.runFromBundle(FlutterMain.findAppBundlePath(getApplicationContext()), null);
 
-        // flutterView.addOnMessageListener("getLocation",
-        //     new FlutterView.OnMessageListener() {
-        //         @Override
-        //         public String onMessage(FlutterView view, String message) {
-        //             return onGetLocation(message);
-        //         }
-        //     });
-        //
-        // Button getRandom = (Button) findViewById(R.id.get_random);
-        // getRandom.setOnClickListener(new View.OnClickListener() {
-        //     @Override
-        //     public void onClick(View v) {
-        //         sendGetRandom();
-        //     }
-        // });
+        flutterView.addOnMessageListener("hello",
+            new FlutterView.OnMessageListener() {
+                @Override
+                public String onMessage(FlutterView view, String message) {
+                    return onHello(message);
+                }
+            });
     }
 
     @Override
@@ -91,79 +83,16 @@ public class RustActivity extends Activity {
         }
     }
 
-    private void sendGetRandom() {
-        JSONObject message = new JSONObject();
-        try {
-            message.put("min", 1);
-            message.put("max", 1000);
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON exception", e);
-            return;
-        }
+    private String onHello(String json) {
+      JSONObject reply = new JSONObject();
 
-        flutterView.sendToFlutter("getRandom", message.toString(),
-            new FlutterView.MessageReplyCallback() {
-                @Override
-                public void onReply(String json) {
-                    onRandomReply(json);
-                }
-            });
-    }
+      try {
+          reply.put("value", "Hello from Android");
+      } catch (JSONException e) {
+          Log.e(TAG, "JSON exception", e);
+          return null;
+      }
 
-    private void onRandomReply(String json) {
-        double value;
-        try {
-            JSONObject reply = new JSONObject(json);
-            value = reply.getDouble("value");
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON exception", e);
-            return;
-        }
-
-        // TextView randomValue = (TextView) findViewById(R.id.random_value);
-        // randomValue.setText(Double.toString(value));
-    }
-
-    private String onGetLocation(String json) {
-        String provider;
-        try {
-            JSONObject message = new JSONObject(json);
-            provider = message.getString("provider");
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON exception", e);
-            return null;
-        }
-
-        String locationProvider;
-        if (provider.equals("network")) {
-            locationProvider = LocationManager.NETWORK_PROVIDER;
-        } else if (provider.equals("gps")) {
-            locationProvider = LocationManager.GPS_PROVIDER;
-        } else {
-            return null;
-        }
-
-        String permission = "android.permission.ACCESS_FINE_LOCATION";
-        Location location = null;
-        if (checkCallingOrSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            location = locationManager.getLastKnownLocation(locationProvider);
-        }
-
-        JSONObject reply = new JSONObject();
-        try {
-            if (location != null) {
-              reply.put("latitude", location.getLatitude());
-              reply.put("longitude", location.getLongitude());
-            } else {
-              reply.put("latitude", 0);
-              reply.put("longitude", 0);
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON exception", e);
-            return null;
-        }
-
-        return reply.toString();
+      return reply.toString();
     }
 }

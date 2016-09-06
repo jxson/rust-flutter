@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(
@@ -21,10 +24,12 @@ class FlutterDemo extends StatefulWidget {
 
 class _FlutterDemoState extends State<FlutterDemo> {
   int _counter = 0;
+  String _message = '';
 
   void _incrementCounter() {
     setState(() {
       _counter++;
+      _hello();
     });
   }
 
@@ -36,7 +41,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
       ),
       body: new Center(
         child: new Text(
-            'Button tapped $_counter time${ _counter == 1 ? '' : 's' }.'),
+          'Button tapped $_counter time${ _counter == 1 ? '' : 's' }. '
+          '==> ${ _message }<=='
+        ),
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: _incrementCounter,
@@ -44,5 +51,19 @@ class _FlutterDemoState extends State<FlutterDemo> {
         child: new Icon(Icons.add),
       ),
     );
+  }
+
+  Future<Null> _hello() async {
+    print('== Flutter ==> sending message');
+    final Map<String, String> message = <String, String>{'value': null};
+    final Map<String, String> reply = await HostMessages.sendJSON('hello', message);
+
+    print('== Flutter ==> received reply');
+
+    if (! mounted) return;
+
+    setState(() {
+      _message = reply['value'];
+    });
   }
 }
