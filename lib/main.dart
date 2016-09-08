@@ -27,6 +27,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
   String _message = '';
 
   void _incrementCounter() {
+    print('== Flutter ==> _incrementCounter() called');
     setState(() {
       _counter++;
       _hello();
@@ -42,7 +43,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
       body: new Center(
         child: new Text(
           'Button tapped $_counter time${ _counter == 1 ? '' : 's' }. '
-          '==> ${ _message }<=='
+          '==> ${ _message } <=='
         ),
       ),
       floatingActionButton: new FloatingActionButton(
@@ -55,6 +56,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
 
   Future<Null> _hello() async {
     print('== Flutter ==> sending message');
+
     final Map<String, String> message = <String, String>{'value': null};
     final Map<String, String> reply = await HostMessages.sendJSON('hello', message);
 

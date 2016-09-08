@@ -1,0 +1,14 @@
+[package]
+name = "sample"
+version = "0.1.0"
+authors = ["Jason Campbell <jason@artifact.sh>"]
+description = "Example static library project built for Flutter"
+
+[dependencies]
+jni-sys = "0.1.0"
+log = "0.3.6"
+android_logger = "0.2.2"
+
+[lib]
+name = "sample"
+crate-type = ["staticlib", "cdylib"]

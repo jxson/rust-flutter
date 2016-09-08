@@ -26,6 +26,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RustActivity extends Activity {
+     static {
+         System.loadLibrary("sample");
+     }
+
+    private static native String hello();
+
     private static final String TAG = "RustActivity";
 
     private FlutterView flutterView;
@@ -84,10 +90,19 @@ public class RustActivity extends Activity {
     }
 
     private String onHello(String json) {
-      JSONObject reply = new JSONObject();
+        Log.i(TAG, "== Activity ==> Received hello message");
 
+        Log.i(TAG, "== Activity ==> Calling RUST");
+        final String message = hello();
+        if (message == null) {
+          throw new RuntimeException("RUST hello() failed");
+        }
+
+        Log.i(TAG, "== Activity ==> RUST message: " + message);
+        // final String message = "Hello from Android";
+        JSONObject reply = new JSONObject();
       try {
-          reply.put("value", "Hello from Android");
+          reply.put("value", message);
       } catch (JSONException e) {
           Log.e(TAG, "JSON exception", e);
           return null;
